@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 5000;
@@ -39,6 +39,19 @@ async function run() {
         res.status(500).json({ error: "Failed to fetch crafts" });
       }
     });
+
+    // get data by id for update
+    app.get('/addCrafts/:id', async(req, res) =>{
+      try{
+        const id = req.params.id;
+        const query ={_id: new ObjectId(id)}
+        const user = await addAllCrafts.findOne(query);
+        res.send(user)
+      } catch(error){
+        console.error('"Error updating crafts:", error');
+        res.status(500).json({ error: "Failed to update crafts" });
+      }
+    })
     
 
     app.post('/addCrafts', async(req, res) => {
