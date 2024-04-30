@@ -4,6 +4,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 5000;
+// const { ObjectId } = require('mongodb');
 
 // middleware
 app.use(cors());
@@ -54,6 +55,7 @@ async function run() {
     })
 
     app.put('/addCrafts/:id', async(req, res) =>{
+      console.log('tezst')
       try{
         const id = req.params.id;
         const craft = req.body;
@@ -77,11 +79,27 @@ async function run() {
         const result = await addAllCrafts.updateOne(filter, updatedCraft, options);
         res.send(result);
       } catch(error){
+        console.log(error);
         console.error('"Error updating crafts:", error');
         res.status(500).json({ error: "Failed to update crafts" });
       }
     })
-    
+
+    app.delete('/addCrafts/:id', async (req, res) => {
+      try {
+          const id = req.params.id;
+          const query = { _id: new ObjectId(id) };
+          const result = await addAllCrafts.deleteOne(query);
+          if (result.deletedCount === 1) {
+              res.json({ message: 'Craft deleted successfully' });
+          } else {
+              res.status(404).json({ error: 'Craft not found' });
+          }
+      } catch (error) {
+          console.error('Error deleting craft:', error);
+          res.status(500).json({ error: 'Failed to delete craft' });
+      }
+  });
 
     app.post('/addCrafts', async(req, res) => {
       try {
