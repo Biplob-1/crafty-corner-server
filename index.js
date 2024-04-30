@@ -24,7 +24,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server (optional starting in v4.7)
-    await client.connect(); //ai line comment kore dite hobe
+    // await client.connect(); //ai line comment kore dite hobe
 
     // create database and data table
     const addAllCrafts = client.db('artfulGlassAndPaper').collection('addCrafts');
