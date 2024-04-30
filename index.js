@@ -23,7 +23,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server (optional starting in v4.7)
-    await client.connect();
+    await client.connect(); //ai line comment kore dite hobe
 
     // create database and data table
     const addAllCrafts = client.db('artfulGlassAndPaper').collection('addCrafts');
@@ -52,6 +52,35 @@ async function run() {
         res.status(500).json({ error: "Failed to update crafts" });
       }
     })
+
+    app.put('/addCrafts/:id', async(req, res) =>{
+      try{
+        const id = req.params.id;
+        const craft = req.body;
+        const filter = {_id: new ObjectId(id)}
+        const options ={upsert: true}
+        const updatedCraft = {
+          $set: {
+            name: craft.name,
+            image: craft.image,
+            itemName: craft.itemName,
+            subcategoryName: craft.subcategoryName,
+            shortDescription: craft.shortDescription,
+            price: craft.price,
+            rating: craft.rating,
+            customization: craft.customization,
+            processingTime: craft.processingTime,
+            stockStatus: craft.stockStatus,
+            email: craft.email,
+          }
+        }
+        const result = await addAllCrafts.updateOne(filter, updatedCraft, options);
+        res.send(result);
+      } catch(error){
+        console.error('"Error updating crafts:", error');
+        res.status(500).json({ error: "Failed to update crafts" });
+      }
+    })
     
 
     app.post('/addCrafts', async(req, res) => {
@@ -67,7 +96,7 @@ async function run() {
     });
 
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    await client.db("admin").command({ ping: 1 }); //aita pore comment kore dite hobe
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensure that the client will close when you finish/error
